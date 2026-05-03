@@ -69,7 +69,7 @@ export function Block2() {
           </div>
 
           <a
-            href="#diagnostics"
+            href="#consult"
             className="mx-auto mt-7 inline-flex w-full items-center justify-center rounded-2xl bg-[color:var(--c-btn-blue)] px-8 py-4 font-[Inter] text-[15px] font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5 active:translate-y-0 lg:mx-0 lg:mt-8 lg:w-auto lg:py-3.5 lg:text-[15px]"
           >
             Записаться на диагностику
