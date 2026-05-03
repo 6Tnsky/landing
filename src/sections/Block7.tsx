@@ -1,26 +1,25 @@
 import { motion } from 'framer-motion'
-import { cn } from '../lib/cn'
 
 const steps = [
   {
     n: '1',
     title: 'Беседа с врачом',
-    text: 'Уточняем симптомы, анамнез\nи факторы риска',
+    text: 'Уточняем симптомы, анамнез и факторы риска',
   },
   {
     n: '2',
     title: 'Диагностика зрения',
-    text: 'Проводим осмотр и подбираем объём\nобследования',
+    text: 'Проводим осмотр и подбираем объём обследования',
   },
   {
     n: '3',
     title: 'Дополнительные исследования',
-    text: 'ОКТ, УЗИ, периметрия — при\nнеобходимости',
+    text: 'ОКТ, УЗИ, периметрия — при необходимости',
   },
   {
     n: '4',
     title: 'Заключение и рекомендации',
-    text: 'Объясняем причину симптома\nи дальнейшую тактику',
+    text: 'Объясняем причину симптома и дальнейшую тактику',
   },
 ] as const
 
@@ -56,7 +55,7 @@ export function Block7() {
                 <div className="mt-5 font-[Inter] text-[15px] font-semibold text-[#222222]">
                   {s.title}
                 </div>
-                <div className="mt-2 whitespace-pre-line text-[13px] leading-[1.25] text-[#6b7280]">
+                <div className="mt-2 text-[13px] leading-[1.25] text-[#6b7280]">
                   {s.text}
                 </div>
               </motion.div>
@@ -83,7 +82,7 @@ export function Block7() {
                 <div className="mt-5 font-[Inter] text-[16px] font-semibold text-[#222222]">
                   {s.title}
                 </div>
-                <div className={cn('mt-2 whitespace-pre-line text-[13px] leading-[1.25] text-[#6b7280]')}>
+                <div className="mt-2 text-[13px] leading-[1.25] text-[#6b7280]">
                   {s.text}
                 </div>
               </motion.div>
