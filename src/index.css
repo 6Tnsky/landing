@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+:root {
+  --c-title: #013066;
+  --c-subtitle: #33a8a2;
+  --c-btn-blue: #325783;
+  --c-danger: #720009;
+  --c-text-on-white: #222222;
+  --c-text: #000000;
+
+  --bg-1: #ffffff;
+  --bg-2: #f7f9fc;
+  --bg-3: #f2f4f7;
+  --bg-dark: #033671;
+  --bg-dark-card: #1a487d;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Open Sans", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+    "Noto Sans", "Liberation Sans", sans-serif;
+  color: var(--c-text-on-white);
+  background: var(--bg-1);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--c-title) 22%, white);
+}
