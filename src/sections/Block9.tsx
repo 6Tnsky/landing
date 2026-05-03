@@ -156,7 +156,12 @@ export function Block9() {
                 <p className="mt-4 text-[11px] leading-[1.35] text-[#6b7280]">
                   Нажимая кнопку &quot;Записаться&quot;, вы даете свое согласие на обработку
                   данных согласно{' '}
-                  <a href="#privacy" className="underline underline-offset-2">
+                  <a
+                    href="https://katarakta.ru/politika.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline underline-offset-2"
+                  >
                     политике конфиденциальности
                   </a>
                 </p>

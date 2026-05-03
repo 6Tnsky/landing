@@ -53,10 +53,20 @@ export function Block11() {
         <div className="mt-12 border-t border-white/10 pt-6 text-[12px] text-white/40 lg:mt-14">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div>© 2026 Все права защищены</div>
-            <a href="#cookies" className="underline underline-offset-2">
+            <a
+              href="https://katarakta.ru/politika-ispolzovaniya-kukis.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2"
+            >
               Политика использования Cookies
             </a>
-            <a id="privacy" href="#privacy" className="underline underline-offset-2">
+            <a
+              href="https://katarakta.ru/politika.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2"
+            >
               Политика конфиденциальности
             </a>
           </div>
