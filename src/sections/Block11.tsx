@@ -3,7 +3,10 @@ import { motion } from 'framer-motion'
 const contacts = [
   { label: '8-903-718-04-02', href: 'tel:+79037180402' },
   { label: 'baharevkatarakta@yandex.ru', href: 'mailto:baharevkatarakta@yandex.ru' },
-  { label: 'MAX', href: '#max' },
+  {
+    label: 'MAX',
+    href: 'https://max.ru/u/f9LHodD0cOKObE2jq2zKXEvSchYJEzXzgb7n51ov5hU08C5XxpKuxveFGhQ',
+  },
 ] as const
 
 export function Block11() {
@@ -39,6 +42,8 @@ export function Block11() {
             <motion.a
               key={c.label}
               href={c.href}
+              target={c.href.startsWith('http') ? '_blank' : undefined}
+              rel={c.href.startsWith('http') ? 'noopener noreferrer' : undefined}
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
