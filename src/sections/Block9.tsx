@@ -1,9 +1,25 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { cn } from '../lib/cn'
+
+const RECAPTCHA_SITE_KEY = '6LeIIBMTAAAAAPZ-S5Uq8ro2CZ2FTED2Z_sFDdLL'
+const FORM_ENDPOINT = 'https://katarakta.ru/ajax/landing_form.php'
+
+type Grecaptcha = {
+  render: (
+    container: HTMLElement | string,
+    params: {
+      sitekey: string
+      theme?: 'light' | 'dark'
+      size?: 'normal' | 'compact' | 'invisible'
+    },
+  ) => number
+  reset: (widgetId?: number) => void
+  getResponse: (widgetId?: number) => string
+}
 
 const schema = z.object({
   name: z.string().trim().min(1),
@@ -15,6 +31,52 @@ type FormValues = z.infer<typeof schema>
 
 export function Block9() {
   const [serverMsg, setServerMsg] = useState<string | null>(null)
+  const [captchaReady, setCaptchaReady] = useState(false)
+  const [captchaError, setCaptchaError] = useState<string | null>(null)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const recaptchaHostRef = useRef<HTMLDivElement | null>(null)
+  const recaptchaWidgetIdRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+
+    const tryRender = () => {
+      const host = recaptchaHostRef.current
+      const grecaptcha = (window as unknown as { grecaptcha?: Grecaptcha }).grecaptcha
+      if (!host || !grecaptcha) return false
+      if (recaptchaWidgetIdRef.current !== null) return true
+
+      try {
+        recaptchaWidgetIdRef.current = grecaptcha.render(host, {
+          sitekey: RECAPTCHA_SITE_KEY,
+          theme: 'light',
+        })
+        setCaptchaReady(true)
+        return true
+      } catch {
+        return false
+      }
+    }
+
+    const t0 = window.setInterval(() => {
+      if (cancelled) return
+      if (tryRender()) window.clearInterval(t0)
+    }, 200)
+
+    // safety timeout (don’t block the form UI forever)
+    const t1 = window.setTimeout(() => {
+      if (cancelled) return
+      const grecaptcha = (window as unknown as { grecaptcha?: Grecaptcha }).grecaptcha
+      if (!grecaptcha) setCaptchaError('Капча не загрузилась. Попробуйте обновить страницу.')
+      window.clearInterval(t0)
+    }, 8000)
+
+    return () => {
+      cancelled = true
+      window.clearInterval(t0)
+      window.clearTimeout(t1)
+    }
+  }, [])
 
   const defaultValues = useMemo<FormValues>(
     () => ({ name: '', phone: '', email: '' }),
@@ -46,10 +108,40 @@ export function Block9() {
 
   const onSubmit = async (values: FormValues) => {
     setServerMsg(null)
-    await new Promise((r) => setTimeout(r, 350))
-    console.log('consultation request (mock)', values)
-    setServerMsg('Спасибо! Заявка принята.')
-    reset(defaultValues)
+    setSubmitError(null)
+
+    const grecaptcha = (window as unknown as { grecaptcha?: Grecaptcha }).grecaptcha
+    const widgetId = recaptchaWidgetIdRef.current ?? undefined
+    const captchaToken = grecaptcha?.getResponse(widgetId) ?? ''
+
+    if (!captchaToken) {
+      setSubmitError('Подтвердите, что вы не робот')
+      return
+    }
+
+    try {
+      const res = await fetch(FORM_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: values.name,
+          phone: values.phone,
+          email: values.email ?? '',
+          captcha_token: captchaToken,
+        }),
+      })
+
+      if (!res.ok) {
+        setSubmitError('Не удалось отправить заявку. Попробуйте позже.')
+        return
+      }
+
+      setServerMsg('Спасибо! Заявка принята.')
+      reset(defaultValues)
+      grecaptcha?.reset(widgetId)
+    } catch {
+      setSubmitError('Не удалось отправить заявку. Проверьте подключение к интернету.')
+    }
   }
 
   return (
@@ -141,6 +233,23 @@ export function Block9() {
                     {serverMsg}
                   </div>
                 ) : null}
+                {submitError ? (
+                  <div className="mt-4 text-[13px] font-medium text-[color:var(--c-danger)]">
+                    {submitError}
+                  </div>
+                ) : null}
+
+                <div className="mt-6">
+                  <div ref={recaptchaHostRef} />
+                  {!captchaReady && !captchaError ? (
+                    <div className="mt-2 text-[12px] text-[#6b7280]">Загрузка капчи…</div>
+                  ) : null}
+                  {captchaError ? (
+                    <div className="mt-2 text-[12px] text-[color:var(--c-danger)]">
+                      {captchaError}
+                    </div>
+                  ) : null}
+                </div>
 
                 <button
                   type="submit"
